@@ -138,7 +138,10 @@ MAPS.forEach(function(m){
   b.addEventListener("click", function(){
     lb.querySelector(".t").textContent = m.title;
     lb.querySelector(".s").textContent = m.sub;
-    lb.querySelector(".lb-body img").src = mapUrl(m.good, 1600);
+    const big = lb.querySelector(".lb-body img");
+    const remote = m.files.length ? mapUrl(m.files[0], 1600) : null;
+    big.onerror = (remote && m.good !== remote) ? function(){ big.onerror = null; big.src = remote; } : null;
+    big.src = m.good;
     lb.classList.add("open");
   });
   host.appendChild(b);
