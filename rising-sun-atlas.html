@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Rising Sun: A Campaign Atlas, 1936-1941</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14161d; --ink2:#1d2029; --ink3:#232633;
+    --paper:#efe7d3; --paper-dim:#d9d0b8;
+    --seal:#c0362c; --gov:#8a93a8; --line:#3a3e4d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--ink);color:var(--paper);
+    font-family:'Zen Kaku Gothic New',system-ui,sans-serif;
+    line-height:1.5;padding-bottom:60px;
+  }
+  header{text-align:center;padding:44px 16px 6px}
+  .kanji-bg{font-family:'Shippori Mincho',serif;font-size:15px;letter-spacing:.5em;color:var(--seal);margin-bottom:10px}
+  h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(26px,6vw,44px);letter-spacing:.02em;line-height:1.15}
+  .subtitle{margin-top:10px;color:var(--gov);font-size:14px;max-width:520px;margin-left:auto;margin-right:auto}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 14px}
+
+  .event{position:relative;padding-top:38px}
+  .event::before{content:"";position:absolute;top:0;left:50%;width:1px;height:26px;background:var(--line)}
+  .event:first-of-type::before{display:none}
+  .event-label{
+    font-family:'Shippori Mincho',serif;font-size:15px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--paper);text-align:center;margin-bottom:4px;
+  }
+  .event-label .jp{color:var(--seal);margin-right:.5em;letter-spacing:.15em}
+  .event-note{font-size:11.5px;color:var(--gov);text-align:center;margin-bottom:14px}
+
+  .maprow{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+  .mapcard{
+    background:var(--ink2);border:1px solid var(--line);border-radius:6px;
+    width:230px;cursor:pointer;overflow:hidden;padding:0;text-align:left;
+    color:inherit;font:inherit;display:flex;flex-direction:column;
+    transition:transform .12s ease,border-color .12s ease;
+  }
+  .mapcard:hover,.mapcard:focus-visible{transform:translateY(-3px);border-color:var(--seal)}
+  .mapcard:focus-visible{outline:2px solid var(--seal);outline-offset:2px}
+  .mapthumb{
+    width:100%;aspect-ratio:4/3;background:var(--ink3);position:relative;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .mapthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+  .mapthumb .fb{font-family:'Shippori Mincho',serif;color:var(--seal);font-size:18px;letter-spacing:.2em}
+  .mapcard .cap{padding:9px 11px 11px}
+  .mapcard .mt{font-family:'Shippori Mincho',serif;font-weight:700;font-size:13px;line-height:1.25}
+  .mapcard .ms{display:block;font-size:10.5px;color:var(--paper-dim);margin-top:3px;line-height:1.35}
+
+  .lightbox{position:fixed;inset:0;background:rgba(10,11,16,.93);z-index:60;display:none;flex-direction:column}
+  .lightbox.open{display:flex}
+  .lb-top{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;color:var(--paper);flex-shrink:0}
+  .lb-top .t{font-family:'Shippori Mincho',serif;font-weight:700;font-size:15px}
+  .lb-top .s{font-size:11px;color:var(--paper-dim);margin-top:2px}
+  .lb-close{margin-left:auto;background:none;border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--paper);font-size:16px;cursor:pointer;flex-shrink:0}
+  .lb-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;text-align:center;padding:0 0 20px}
+  .lb-body img{max-width:none;width:auto;height:auto;min-width:100%;object-fit:contain}
+  @media(min-width:700px){.lb-body img{min-width:0;max-width:96%}}
+
+  #netnote{display:none;text-align:center;font-size:12px;color:var(--seal);margin:18px auto 0;max-width:460px;padding:0 16px}
+  footer{text-align:center;margin-top:46px;font-size:11.5px;color:var(--gov);padding:0 20px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="kanji-bg">戦域図集</div>
+  <h1>The Rising Sun: A Campaign Atlas</h1>
+  <p class="subtitle">Maps for the events of John Toland's <em>The Rising Sun</em>, chapters 1 through 12, from the China Incident to the December 1941 offensive. A companion to the leadership chart. Tap any map to open it full screen, then pinch and scroll for detail.</p>
+  <p id="netnote">No maps have loaded. This page pulls images from Wikimedia Commons over the internet, so it needs a connection and a browser that permits outside images, such as the built-in browser in Documents by Readdle.</p>
+</header>
+
+<main class="wrap" id="atlas"></main>
+
+<footer>
+  A companion to <em>The Rising Sun: The Decline and Fall of the Japanese Empire, 1936-1945</em> by John Toland.
+  All maps load from Wikimedia Commons and are public domain (U.S. government, West Point atlas, and period Japanese material).
+</footer>
+
+<script>
+const EVENTS = [{"id": "china", "jp": "\u652f\u90a3\u4e8b\u5909", "title": "The China Incident, 1937", "note": "Chapters 2-3: Marco Polo Bridge, Shanghai, and the widening war"}, {"id": "nanking", "jp": "\u5357\u4eac", "title": "The Fall of Nanking, December 1937", "note": "Chapter 3: Matsui's drive up the Yangtze and the massacre that followed"}, {"id": "offensive", "jp": "\u5357\u65b9\u4f5c\u6226", "title": "The Opening Offensive, December 1941", "note": "Chapters 10-12: the simultaneous strike across Southeast Asia and the Pacific"}, {"id": "ph", "jp": "\u771f\u73e0\u6e7e", "title": "Pearl Harbor, December 7, 1941", "note": "Chapters 10-12: Operation Z executed"}, {"id": "malaya", "jp": "\u30de\u30ec\u30fc\u4f5c\u6226", "title": "The Invasion of Malaya, December 1941", "note": "Chapter 12: Yamashita's 25th Army lands at Kota Bharu, Singora, and Patani"}, {"id": "phil", "jp": "\u30d5\u30a3\u30ea\u30d4\u30f3", "title": "The Philippines, December 1941", "note": "Chapter 12: Homma's 14th Army closes on Luzon"}, {"id": "hk", "jp": "\u9999\u6e2f", "title": "The Fall of Hong Kong, December 8-25, 1941", "note": "Chapter 12: the colony surrenders on Christmas Day"}, {"id": "wake", "jp": "\u30a6\u30a7\u30fc\u30af\u5cf6", "title": "Wake Island, December 8-23, 1941", "note": "Chapter 12: the Marines' stand, the repulse of December 11, and the second assault"}];
+
+const MAPS = [{"id": "china-pictorial", "ev": "china", "files": ["1937 Japanese pictorial map of East Asia during the Second Sino-Japanese War.tif"], "title": "Japanese Pictorial Map of East Asia, 1937", "sub": "A period Japanese home-front map of the theater as the China Incident spread."}, {"id": "china-shanghai", "ev": "china", "files": ["1937 World War II Japanese Map of Shanghai, China (w-photo of Bund) - Geographicus - Shanghai-uk-1932.jpg"], "title": "Japanese Map of Shanghai, 1937", "sub": "The city where the incident became a war, as Japanese readers saw it."}, {"id": "nanking", "ev": "nanking", "files": ["Battle of Nanking 1937.jpg"], "title": "The Drive on Nanking", "sub": "Japanese lines of advance in red against the Chinese defense lines, December 1937."}, {"id": "offensive", "ev": "offensive", "files": ["Pacific War - Southeast Asia 1941 - Map.jpg"], "title": "Southeast Asia, December 1941", "sub": "The whole centrifugal offensive at a glance: Indochina staging, Malaya, the Philippines, Hong Kong, and the island seizures. West Point atlas."}, {"id": "ph-route", "ev": "ph", "files": ["PearlHarborCarrierChart.jpg"], "title": "Route of the Kid\u014d Butai", "sub": "Nagumo's carriers' northern approach and withdrawal. U.S. Navy chart."}, {"id": "ph-wave1", "ev": "ph", "files": ["Pearlmap1.png"], "title": "The First Wave", "sub": "Fuchida's 183 aircraft over Oahu, 7:55 a.m. U.S. government map."}, {"id": "ph-japchart", "ev": "ph", "files": ["Japanese map of Pearl Harbor 1941.jpg"], "title": "Captured Japanese Chart", "sub": "A Japanese map of the anchorage, the attackers' own view of Battleship Row."}, {"id": "malaya-usma", "ev": "malaya", "files": ["Pacific War - Malaya 1941-42 - Map.jpg"], "title": "The Malayan Campaign", "sub": "The drive from the Kota Bharu and Singora landings to Singapore. West Point atlas."}, {"id": "malaya-japanese", "ev": "malaya", "files": ["1942 Japanese World War II Map of the Malay Peninsula and Singapore - Geographicus - Kamatchka-japanese-1940.jpg"], "title": "Japanese Wartime Map of Malaya", "sub": "A 1942 Japanese-published map of the peninsula and Singapore, the invader's own cartography."}, {"id": "phil-landings", "ev": "phil", "files": ["https://www.ibiblio.org/hyperwar/USA/USA-P-PI/maps/USA-P-PI-3.gif"], "thumb": "https://www.ibiblio.org/hyperwar/USA/USA-P-PI/maps/USA-P-PI-3m.gif", "title": "The Advance Landings", "sub": "Batan Island, Aparri, Vigan, Legaspi, Davao, and Jolo, 8-25 December 1941. Map 3 from the U.S. Army official history, The Fall of the Philippines."}, {"id": "phil-luzon", "ev": "phil", "files": ["https://www.ibiblio.org/hyperwar/USA/USA-P-PI/img/USA-P-PI-15.gif"], "title": "Luzon", "sub": "The Army history's terrain map of the main island: Lingayen Gulf, the central plain, Manila, and Bataan."}, {"id": "hk", "ev": "hk", "files": ["Hong Kong 18-25 December 1941.png"], "title": "Hong Kong Island Assaulted", "sub": "The Japanese crossing to the island and the fighting of 18-25 December. Canadian official history map."}, {"id": "wake-atoll", "ev": "wake", "files": ["Wake Island map Dec 1941.PNG"], "title": "The Atoll and Its Defenses", "sub": "Wake, Wilkes, and Peale with Devereux's gun positions, December 1941. USMC history map."}, {"id": "wake-repulse", "ev": "wake", "files": ["Wake Island surface action 11 December 1941.PNG"], "title": "The Repulse of December 11", "sub": "The shore batteries drive off Kajioka's first invasion force, sinking the destroyer Hayate. USMC history map."}, {"id": "wake-final", "ev": "wake", "files": ["Wake Island map 0400 hrs 23 Dec 1941.PNG"], "title": "The Final Assault", "sub": "The night landings of 23 December that ended the siege. USMC history map."}];
+
+function mapUrl(f, w){
+  if (f.indexOf("http") === 0) return f;
+  return "https://commons.wikimedia.org/wiki/Special:FilePath/" +
+         encodeURIComponent(f) + "?width=" + w;
+}
+
+let anyLoaded = false;
+const atlas = document.getElementById("atlas");
+
+EVENTS.forEach(function(ev){
+  const sec = document.createElement("section");
+  sec.className = "event";
+  sec.innerHTML = '<div class="event-label"><span class="jp">' + ev.jp + '</span>' +
+    ev.title + '</div><div class="event-note">' + ev.note + '</div>' +
+    '<div class="maprow" id="row-' + ev.id + '"></div>';
+  atlas.appendChild(sec);
+});
+
+const lb = document.createElement("div");
+lb.className = "lightbox";
+lb.innerHTML = '<div class="lb-top"><div><div class="t"></div><div class="s"></div></div>' +
+  '<button class="lb-close" aria-label="Close">\u2715</button></div>' +
+  '<div class="lb-body"><img alt=""></div>';
+document.body.appendChild(lb);
+lb.querySelector(".lb-close").addEventListener("click", function(){ lb.classList.remove("open"); });
+document.addEventListener("keydown", function(e){ if(e.key==="Escape") lb.classList.remove("open"); });
+
+MAPS.forEach(function(m){
+  const host = document.getElementById("row-" + m.ev);
+  if (!host) return;
+  const b = document.createElement("button");
+  b.className = "mapcard";
+  b.innerHTML = '<span class="mapthumb"><span class="fb">\u5730\u56f3</span><img alt=""></span>' +
+    '<span class="cap"><span class="mt">' + m.title + '</span>' +
+    '<span class="ms">' + m.sub + '</span></span>';
+  const img = b.querySelector("img");
+  const local = "img/maps/" + m.id + ".jpg";
+  const chain = [{t: local, f: local}];
+  m.files.forEach(function(f, idx){
+    chain.push({t: (idx === 0 && m.thumb) ? m.thumb : mapUrl(f, 640), f: mapUrl(f, 1600)});
+  });
+  let i = 0;
+  m.good = chain[0].f;
+  img.onload = function(){ img.style.display = "block"; anyLoaded = true; m.good = chain[i].f; };
+  img.onerror = function(){ i++; if (i < chain.length) img.src = chain[i].t; };
+  img.src = chain[0].t;
+  b.addEventListener("click", function(){
+    lb.querySelector(".t").textContent = m.title;
+    lb.querySelector(".s").textContent = m.sub;
+    lb.querySelector(".lb-body img").src = mapUrl(m.good, 1600);
+    lb.classList.add("open");
+  });
+  host.appendChild(b);
+});
+
+setTimeout(function(){
+  if (!anyLoaded) document.getElementById("netnote").style.display = "block";
+}, 8000);
+</script>
+</body>
+</html>

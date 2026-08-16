@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperial Japan: Command &amp; Cabinet, 1936-1941</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14161d;
+    --ink2:#1d2029;
+    --ink3:#232633;
+    --paper:#efe7d3;
+    --paper-dim:#d9d0b8;
+    --seal:#c0362c;
+    --court:#b08d3e;
+    --gov:#8a93a8;
+    --army:#7d7d45;
+    --navy:#5b7fb2;
+    --line:#3a3e4d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Zen Kaku Gothic New',system-ui,sans-serif;
+    line-height:1.5;
+    padding-bottom:60px;
+  }
+  header{text-align:center;padding:44px 16px 10px}
+  .kanji-bg{
+    font-family:'Shippori Mincho',serif;
+    font-size:15px;letter-spacing:.5em;color:var(--seal);margin-bottom:10px;
+  }
+  h1{
+    font-family:'Shippori Mincho',serif;font-weight:800;
+    font-size:clamp(26px,6vw,44px);letter-spacing:.02em;line-height:1.15;
+  }
+  .subtitle{margin-top:10px;color:var(--gov);font-size:14px;max-width:520px;margin-left:auto;margin-right:auto}
+  .legend{
+    display:flex;flex-wrap:wrap;gap:14px;justify-content:center;
+    margin:22px auto 0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .legend span{display:flex;align-items:center;gap:6px;color:var(--paper-dim)}
+  .dot{width:10px;height:10px;border-radius:2px;display:inline-block}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 14px}
+
+  .tier{position:relative;padding-top:34px}
+  .tier::before{content:"";position:absolute;top:0;left:50%;width:1px;height:34px;background:var(--line)}
+  .tier:first-of-type::before{display:none}
+  .tier-label{
+    font-family:'Shippori Mincho',serif;text-align:center;
+    font-size:13px;letter-spacing:.35em;text-transform:uppercase;
+    color:var(--paper-dim);margin-bottom:16px;
+  }
+  .tier-label b{color:var(--paper);letter-spacing:.35em}
+  .tier-label .jp{color:var(--seal);margin-right:.6em;letter-spacing:.2em}
+
+  .row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:8px}
+  @media(max-width:760px){.cols{grid-template-columns:1fr}}
+  .col h3{
+    font-family:'Shippori Mincho',serif;font-size:15px;letter-spacing:.25em;
+    text-transform:uppercase;text-align:center;margin:18px 0 12px;
+    padding-bottom:8px;border-bottom:1px solid var(--line);
+  }
+  .col h3 .jp{color:var(--seal);margin-right:.5em}
+  .sub{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gov);text-align:center;margin:14px 0 8px}
+
+  .card{
+    background:var(--ink2);
+    border:1px solid var(--line);
+    border-top:3px solid var(--branch,#666);
+    border-radius:6px;
+    width:148px;
+    cursor:pointer;
+    overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:transform .12s ease,border-color .12s ease;
+    text-align:left;color:inherit;font:inherit;padding:0;
+  }
+  .card:hover,.card:focus-visible{transform:translateY(-3px);border-color:var(--branch)}
+  .card:focus-visible{outline:2px solid var(--seal);outline-offset:2px}
+  .photo{
+    width:100%;aspect-ratio:4/5;background:var(--ink3);
+    position:relative;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;flex-shrink:0;
+  }
+  .photo img{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 18%;
+    display:none;filter:saturate(.85);
+  }
+  .photo .fb{
+    writing-mode:vertical-rl;font-family:'Shippori Mincho',serif;
+    color:var(--seal);font-size:22px;letter-spacing:.18em;opacity:.9;
+  }
+  .card .txt{padding:9px 10px 11px}
+  .card .nm{font-family:'Shippori Mincho',serif;font-weight:700;font-size:13.5px;line-height:1.2}
+  .card .rl{font-size:10.5px;color:var(--paper-dim);margin-top:3px;line-height:1.3}
+  .card.big{width:196px}
+  .card.big .nm{font-size:17px}
+  .card.big .rl{font-size:12px}
+
+  .overlay{
+    position:fixed;inset:0;background:rgba(10,11,16,.82);
+    display:none;align-items:flex-end;justify-content:center;z-index:50;
+  }
+  @media(min-width:600px){.overlay{align-items:center}}
+  .overlay.open{display:flex}
+  .dossier{
+    background:var(--paper);color:var(--ink);
+    width:100%;max-width:480px;max-height:88vh;overflow-y:auto;
+    border-radius:14px 14px 0 0;padding:22px 22px 34px;position:relative;
+  }
+  @media(min-width:600px){.dossier{border-radius:10px}}
+  .dossier .close{
+    position:absolute;top:12px;right:12px;background:none;
+    border:1px solid rgba(20,22,29,.3);border-radius:50%;
+    width:32px;height:32px;font-size:16px;cursor:pointer;color:var(--ink);
+  }
+  .dhead{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px;padding-right:30px}
+  .pic{
+    width:96px;height:120px;flex-shrink:0;background:var(--ink2);
+    border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(20,22,29,.25);position:relative;
+  }
+  .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 15%;display:none}
+  .pic .fb{writing-mode:vertical-rl;font-family:'Shippori Mincho',serif;color:var(--paper);font-size:20px;letter-spacing:.15em}
+  .dhead .nm{font-family:'Shippori Mincho',serif;font-weight:800;font-size:22px;line-height:1.15}
+  .dhead .jp{font-family:'Shippori Mincho',serif;color:var(--seal);font-size:15px;margin-top:2px}
+  .badge{
+    display:inline-block;margin-top:8px;font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;padding:3px 8px;border-radius:3px;
+    color:var(--paper);background:var(--branch,#666);
+  }
+  .field{margin-top:12px}
+  .field .lb{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(20,22,29,.55);margin-bottom:3px}
+  .field .vl{font-size:14px}
+  .field .vl.bio{font-size:13.5px;line-height:1.55}
+  .stamp{
+    position:absolute;bottom:18px;right:20px;
+    font-family:'Shippori Mincho',serif;color:var(--seal);
+    border:2px solid var(--seal);border-radius:4px;
+    writing-mode:vertical-rl;font-size:13px;padding:6px 3px;
+    letter-spacing:.15em;opacity:.75;transform:rotate(-4deg);pointer-events:none;
+  }
+
+  footer{text-align:center;margin-top:46px;font-size:11.5px;color:var(--gov);padding:0 20px}
+  #netnote{
+    display:none;text-align:center;font-size:12px;color:var(--seal);
+    margin:18px auto 0;max-width:460px;padding:0 16px;
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="kanji-bg">大日本帝国</div>
+  <h1>Command &amp; Cabinet of Imperial Japan</h1>
+  <p class="subtitle">The civilian and military leadership appearing in John Toland's <em>The Rising Sun</em>, chapters 1 through 12, from the 2/26 Incident through Pearl Harbor and the opening of the southern offensive. Tap any card for the dossier.</p>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--court)"></i>Court</span>
+    <span><i class="dot" style="background:var(--gov)"></i>Government</span>
+    <span><i class="dot" style="background:var(--army)"></i>Army</span>
+    <span><i class="dot" style="background:var(--navy)"></i>Navy</span>
+  </div>
+  <p id="netnote">No portraits have loaded. This page pulls photos from Wikipedia over the internet, so it needs a connection and a regular browser such as Safari or Chrome. In-app previews and the iPad Files quick-look viewer block outside images entirely.</p>
+</header>
+
+<main class="wrap">
+  <section class="tier">
+    <div class="tier-label"><span class="jp">天皇</span><b>The Throne</b></div>
+    <div class="row" id="tier-emperor"></div>
+  </section>
+
+  <section class="tier">
+    <div class="tier-label"><span class="jp">宮中</span><b>Court &amp; Senior Advisors</b></div>
+    <div class="row" id="tier-court"></div>
+  </section>
+
+  <section class="tier">
+    <div class="tier-label"><span class="jp">二・二六事件</span><b>The 2/26 Incident, 1936</b></div>
+    <div class="sub">Ideologues &amp; Ring Leaders</div>
+    <div class="row" id="rebels"></div>
+    <div class="sub">The Targets</div>
+    <div class="row" id="targets"></div>
+    <div class="sub">Generals of the Factions &amp; the Aftermath</div>
+    <div class="row" id="faction"></div>
+  </section>
+
+  <section class="tier">
+    <div class="tier-label"><span class="jp">政府</span><b>The Government</b></div>
+    <div class="sub">Prime Ministers, 1936-1941</div>
+    <div class="row" id="tier-pms"></div>
+    <div class="sub">Ministers &amp; Planners</div>
+    <div class="row" id="tier-ministers"></div>
+    <div class="sub">Diplomats &amp; Envoys</div>
+    <div class="row" id="tier-diplomats"></div>
+    <div class="sub">The John Doe Channel</div>
+    <div class="row" id="tier-johndoe"></div>
+  </section>
+
+  <section class="tier">
+    <div class="tier-label"><span class="jp">統帥部</span><b>The High Command</b></div>
+    <div class="cols">
+      <div class="col">
+        <h3><span class="jp">陸軍</span>Army</h3>
+        <div class="sub">General Staff &amp; Ministry</div>
+        <div class="row" id="army-staff"></div>
+        <div class="sub">China &amp; Manchuria, 1931-1938</div>
+        <div class="row" id="army-china"></div>
+        <div class="sub">The Southern Offensive, Dec 1941</div>
+        <div class="row" id="army-field"></div>
+      </div>
+      <div class="col">
+        <h3><span class="jp">海軍</span>Navy</h3>
+        <div class="sub">General Staff &amp; Ministry</div>
+        <div class="row" id="navy-staff"></div>
+        <div class="sub">Combined Fleet &amp; Pearl Harbor</div>
+        <div class="row" id="navy-fleet"></div>
+        <div class="sub">Espionage: Honolulu</div>
+        <div class="row" id="navy-spy"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Compiled from John Toland, <em>The Rising Sun: The Decline and Fall of the Japanese Empire, 1936-1945</em>, Parts I-III.
+  Portraits load live from Wikipedia; the red kanji seal appears when no portrait is available.
+</footer>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="dossier" id="dossier"></div>
+</div>
+
+<script>
+const PEOPLE = [
+ {id:"hirohito", tier:"tier-emperor", big:true, branch:"court", wiki:"Hirohito", name:"Emperor Hirohito", jp:"\u88d5\u4ec1", seal:"\u662d\u548c", role:"Emperor of Japan (Sh\u014dwa)", offices:"Emperor, 1926-1989. Supreme commander of the armed forces in name; constitutional sovereign in practice.", bio:"The still center of Toland's story. Trained to reign but not rule, he speaks in poetry and indirection at the imperial conferences, most famously reciting his grandfather Meiji's peace poem at the September 6, 1941 conference. Toland portrays him as consistently pressing Konoye and then Tojo to exhaust diplomacy before sanctioning war."},
+ {id:"kido", tier:"tier-court", branch:"court", wiki:"Koichi Kido", name:"Marquis K\u014dichi Kido", jp:"\u6728\u6238\u5e78\u4e00", seal:"\u6728\u6238", role:"Lord Keeper of the Privy Seal", offices:"Lord Keeper of the Privy Seal, 1940-1945. The Emperor's closest political advisor and gatekeeper.", bio:"The Emperor's chief political counselor and the man who managed the succession of cabinets. It is Kido who engineers Tojo's appointment as Prime Minister in October 1941, gambling that only Tojo can control the Army while the throne's instruction to 'go back to blank paper' on the war decision is carried out."},
+ {id:"saionji", tier:"tier-court", branch:"court", wiki:"Saionji Kinmochi", name:"Prince Kinmochi Saionji", jp:"\u897f\u5712\u5bfa\u516c\u671b", seal:"\u897f\u5712\u5bfa", role:"Last Genr\u014d (Elder Statesman)", offices:"Genr\u014d, the last surviving elder statesman of the Meiji generation. Died November 1940.", bio:"The last of the Meiji elders who once chose Japan's premiers. In Toland's opening chapters he is the aging liberal voice, despairing at the Army's insubordination after the 2/26 mutiny and at Konoye's drift toward the Axis. His death in 1940 removes the final restraint of the old order."},
+ {id:"hara", tier:"tier-court", branch:"court", wiki:"Yoshimichi Hara", name:"Yoshimichi Hara", jp:"\u539f\u5609\u9053", seal:"\u539f", role:"President, Privy Council", offices:"President of the Privy Council, 1940-1944. Spoke for the Emperor at imperial conferences.", bio:"At the imperial conferences of 1941 it is Hara who asks the questions the Emperor cannot ask directly, probing the service chiefs on whether diplomacy truly has priority over war preparations. His interrogations at the September and November conferences frame Toland's account of the decision for war."},
+ {id:"suzuki_k", tier:"tier-court", branch:"court", wiki:"Kantar\u014d Suzuki", name:"Adm. Kantar\u014d Suzuki", jp:"\u9234\u6728\u8cab\u592a\u90ce", seal:"\u9234\u6728", role:"Grand Chamberlain", offices:"Grand Chamberlain to the Emperor, 1929-1936. Shot and gravely wounded in the 2/26 Incident.", bio:"The old admiral shot three times in his bedroom on February 26. His wife Taka talked Captain And\u014d out of the finishing shot, a mercy And\u014d bowed over. Suzuki survives, and readers of the whole book know why Toland lingers here: he returns in 1945 as the Prime Minister who ends the war."},
+ {id:"honjo", tier:"tier-court", branch:"court", wiki:"Shigeru Honj\u014d", name:"Gen. Shigeru Honj\u014d", jp:"\u672c\u5e84\u7e41", seal:"\u672c\u5e84", role:"Chief Aide-de-Camp to the Emperor", offices:"Chief aide-de-camp, 1933-1936. His diary is a key source for the court's view of 2/26.", bio:"The Emperor's military aide, caught between the throne and an army that included his own son-in-law among the plot's sympathizers. His diary records Hirohito's fury during the mutiny, including the threat to lead the Imperial Guards against the rebels in person."},
+ {id:"kita", tier:"rebels", branch:"army", wiki:"Ikki Kita", name:"Ikki Kita", jp:"\u5317\u4e00\u8f1d", seal:"\u5317", role:"Ultranationalist Ideologue", offices:"Author of the 'Reconstruction of Japan' program that inspired the young officers. Executed 1937.", bio:"The revolutionary theorist behind the young officers' creed of gekokuj\u014d, a Showa Restoration mixing emperor worship with national socialism. Toland opens the book with the mutiny his ideas ignited: 1,400 troops in the February snow, ministers murdered, and Kita himself shot by firing squad the following year."},
+ {id:"nishida", tier:"rebels", branch:"army", wiki:"Mitsugi Nishida", name:"Mitsugi Nishida", jp:"\u897f\u7530\u7a05", seal:"\u897f\u7530", role:"Kita's Disciple", offices:"Former Army officer, chief link between Kita's ideology and the young officers' movement. Executed 1937.", bio:"Kita's principal apostle, the connective tissue between the theorist and the regiments. Tried in secret with Kita after the mutiny collapsed and executed beside him."},
+ {id:"nonaka", tier:"rebels", branch:"army", wiki:"Shir\u014d Nonaka", name:"Capt. Shir\u014d Nonaka", jp:"\u91ce\u4e2d\u56db\u90ce", seal:"\u91ce\u4e2d", role:"Senior Rebel Officer", offices:"Captain, 3rd Infantry Regiment; senior of the 2/26 ring leaders. Led the seizure of Metropolitan Police headquarters.", bio:"The oldest of the young officers, who threw away a promising career for the rising. When it collapsed without the hoped-for imperial blessing, he shot himself rather than surrender."},
+ {id:"ando", tier:"rebels", branch:"army", wiki:"Teruz\u014d And\u014d", name:"Capt. Teruz\u014d And\u014d", jp:"\u5b89\u85e4\u8f1d\u4e09", seal:"\u5b89\u85e4", role:"Rebel Officer", offices:"Captain, 3rd Infantry Regiment. Led the attack on Grand Chamberlain Suzuki. Executed 1936.", bio:"The most reluctant of the plotters and, in Toland's telling, the most human: he leads the party that guns down Suzuki, then grants the wife's plea to withhold the coup de gr\u00e2ce and bows to the dying man. He shot himself as the mutiny failed, survived, and was executed."},
+ {id:"kurihara", tier:"rebels", branch:"army", wiki:"Yasuhide Kurihara", name:"Lt. Yasuhide Kurihara", jp:"\u6817\u539f\u5b89\u79c0", seal:"\u6817\u539f", role:"Rebel Officer", offices:"Lieutenant who led the assault on the Prime Minister's official residence. Executed 1936.", bio:"The fiery lieutenant whose party stormed the Prime Minister's residence and killed Colonel Matsuo, Okada's look-alike brother-in-law, believing the premier dead. Executed with the other ring leaders in secret trials."},
+ {id:"okada", tier:"targets", branch:"gov", wiki:"Keisuke Okada", name:"Adm. Keisuke Okada", jp:"\u5ca1\u7530\u5553\u4ecb", seal:"\u5ca1\u7530", role:"Prime Minister, 1934-36", offices:"Prime Minister at the time of the 2/26 Incident. Resigned days after it; later an elder statesman.", bio:"The Prime Minister the rebels came to kill. He hid in a maid's closet while his brother-in-law died in his place, then was smuggled out among the mourners at his own wake. His government fell with him, opening the door to Army domination of the cabinets."},
+ {id:"takahashi", tier:"targets", branch:"gov", wiki:"Korekiyo Takahashi", name:"Korekiyo Takahashi", jp:"\u9ad8\u6a4b\u662f\u6e05", seal:"\u9ad8\u6a4b", role:"Finance Minister", offices:"Finance Minister and former Prime Minister, the 'Keynes of Japan.' Murdered February 26, 1936.", bio:"The beloved old financier who had pulled Japan out of the Depression and dared to cut the military budget. For that the young officers shot and hacked him to death in his bed, shouting 'Tenchu!', punishment of heaven."},
+ {id:"saito_m", tier:"targets", branch:"gov", wiki:"Makoto Sait\u014d", name:"Adm. Makoto Sait\u014d", jp:"\u658e\u85e4\u5b9f", seal:"\u658e\u85e4", role:"Lord Keeper of the Privy Seal", offices:"Lord Keeper of the Privy Seal, former Prime Minister. Murdered February 26, 1936.", bio:"The moderate old admiral machine-gunned in his home hours after an evening at the American embassy, his wife trying to shield his body with her own. His murder removed one more restraining voice from around the throne."},
+ {id:"watanabe", tier:"targets", branch:"army", wiki:"J\u014dtar\u014d Watanabe", name:"Gen. J\u014dtar\u014d Watanabe", jp:"\u6e21\u8fba\u9320\u592a\u90ce", seal:"\u6e21\u8fba", role:"Inspector General of Military Education", offices:"One of the Army's 'Big Three.' Murdered in front of his family, February 26, 1936.", bio:"Holder of the post the K\u014dd\u014dha faithful believed stolen from their hero Mazaki. The rebels killed him in front of his wife and daughter, settling a faction grudge with machine-gun fire."},
+ {id:"araki", tier:"faction", branch:"army", wiki:"Sadao Araki", name:"Gen. Sadao Araki", jp:"\u8352\u6728\u8c9e\u592b", seal:"\u8352\u6728", role:"Imperial Way Faction Leader", offices:"Former War Minister, leading general of the K\u014dd\u014dha (Imperial Way) faction.", bio:"The spiritual godfather of the young officers, whose intoxicating talk of imperial destiny and the Japanese spirit fed a movement he could neither lead nor stop. After 2/26 he was purged to the reserves with the rest of the faction's generals."},
+ {id:"mazaki", tier:"faction", branch:"army", wiki:"Jinzabur\u014d Masaki", name:"Gen. Jinzabur\u014d Mazaki", jp:"\u771f\u5d0e\u751a\u4e09\u90ce", seal:"\u771f\u5d0e", role:"Imperial Way Faction General", offices:"Inspector General of Military Education until his 1935 dismissal, which helped ignite the rising.", bio:"The general the rebels wanted made premier. His sacking in 1935 set off the chain that ran through the Aizawa affair to the February mutiny. Toland shows him temporizing with the rebels in the crisis; he was court-martialed afterward and acquitted."},
+ {id:"kawashima", tier:"faction", branch:"army", wiki:"Yoshiyuki Kawashima", name:"Gen. Yoshiyuki Kawashima", jp:"\u5ddd\u5cf6\u7fa9\u4e4b", seal:"\u5ddd\u5cf6", role:"War Minister, 1936", offices:"War Minister during the 2/26 Incident; received the rebels' demands.", bio:"The War Minister to whom the mutineers read their manifesto on the first morning. His wavering, and the Army's, contrasted with the Emperor's flat demand that the rebels be crushed, ended his career when the incident was over."},
+ {id:"hirota", tier:"tier-pms", branch:"gov", wiki:"Koki Hirota", name:"K\u014dki Hirota", jp:"\u5e83\u7530\u5f18\u6bc5", seal:"\u5e83\u7530", role:"Prime Minister 1936-37; Foreign Minister", offices:"Prime Minister, March 1936 to February 1937, taking office in the wake of the 2/26 Incident. Later Foreign Minister under Konoye.", bio:"The career diplomat handed the premiership after the 2/26 mutiny. Under Army pressure he restores the rule that service ministers must be active-duty officers, a concession Toland marks as fatal, since it hands the Army a veto over every future cabinet."},
+ {id:"hayashi", tier:"tier-pms", branch:"army", wiki:"Senj\u016br\u014d Hayashi", name:"Gen. Senj\u016br\u014d Hayashi", jp:"\u6797\u9291\u5341\u90ce", seal:"\u6797", role:"Prime Minister 1937", offices:"Prime Minister, February to June 1937.", bio:"The colorless general whose four-month 'eat and run' caretaker cabinet bridged Hirota's fall and Konoye's first government, just before the Marco Polo Bridge shooting."},
+ {id:"konoye", tier:"tier-pms", branch:"gov", wiki:"Fumimaro Konoe", name:"Prince Fumimaro Konoye", jp:"\u8fd1\u885b\u6587\u9ebf", seal:"\u8fd1\u885b", role:"Prime Minister 1937-39, 1940-41", offices:"Prime Minister, June 1937 to January 1939 and July 1940 to October 1941. Presided over the China war, the Tripartite Pact, and the failed negotiations with Washington.", bio:"The elegant, irresolute prince at the heart of the first half of the book. He escalates the China Incident, signs the Tripartite Pact, then spends 1941 desperately seeking a summit with Roosevelt to undo it all. Unable to win Army agreement to withdraw troops from China, he resigns in October 1941 rather than lead Japan into war."},
+ {id:"hiranuma", tier:"tier-pms", branch:"gov", wiki:"Kiichiro Hiranuma", name:"Baron Kiichir\u014d Hiranuma", jp:"\u5e73\u6cbc\u9a0f\u4e00\u90ce", seal:"\u5e73\u6cbc", role:"Prime Minister 1939", offices:"Prime Minister, January to August 1939. Later Home Minister in the third Konoye cabinet.", bio:"The nationalist jurist whose cabinet collapses when Hitler signs his pact with Stalin in August 1939, leaving Japan's anti-Comintern diplomacy 'intricate and baffling,' in his famous resignation phrase. He resurfaces in 1941 as a voice of caution, and survives an ultranationalist assassination attempt."},
+ {id:"abe", tier:"tier-pms", branch:"army", wiki:"Nobuyuki Abe", name:"Gen. Nobuyuki Abe", jp:"\u963f\u90e8\u4fe1\u884c", seal:"\u963f\u90e8", role:"Prime Minister 1939-40", offices:"Prime Minister, August 1939 to January 1940.", bio:"The general-premier who inherited the wreckage of the Nazi-Soviet shock and the new European war, holding office for five months while Japan groped for a policy."},
+ {id:"yonai", tier:"tier-pms", branch:"gov", wiki:"Mitsumasa Yonai", name:"Adm. Mitsumasa Yonai", jp:"\u7c73\u5185\u5149\u653f", seal:"\u7c73\u5185", role:"Prime Minister 1940; Navy Minister", offices:"Navy Minister 1937-39; Prime Minister, January to July 1940. Opposed the Tripartite Pact.", bio:"The tall, taciturn admiral who, with Yamamoto as his vice minister, fought the German alliance to a standstill in 1939. His premiership is destroyed in mid-1940 when the Army withdraws its minister to force alignment with a victorious Germany. His fall marks the end of open resistance to the Axis course."},
+ {id:"tojo", tier:"tier-pms", branch:"army", wiki:"Hideki Tojo", name:"Gen. Hideki Tojo", jp:"\u6771\u689d\u82f1\u6a5f", seal:"\u6771\u689d", role:"War Minister; Prime Minister from Oct 1941", offices:"War Minister, July 1940 to 1944; Prime Minister from October 18, 1941, retaining the War Ministry.", bio:"'The Razor.' As War Minister he is the immovable object against troop withdrawal from China, the issue that breaks Konoye. Named premier by Kido precisely because he alone can discipline the Army, he honors the Emperor's wish to re-examine the war decision, then presides over the November conferences that set the Pearl Harbor deadline."},
+ {id:"matsuoka", tier:"tier-ministers", branch:"gov", wiki:"Yosuke Matsuoka", name:"Y\u014dsuke Matsuoka", jp:"\u677e\u5ca1\u6d0b\u53f3", seal:"\u677e\u5ca1", role:"Foreign Minister 1940-41", offices:"Foreign Minister, July 1940 to July 1941. Architect of the Tripartite Pact and the Soviet neutrality treaty.", bio:"The volcanic, American-educated diplomat who talks 'ninety percent of the time' in any meeting. He signs the Tripartite Pact, then the neutrality pact with Stalin, then demands war on Russia when Hitler invades. Konoye dissolves his entire cabinet in July 1941 simply to get rid of him."},
+ {id:"toyoda_t", tier:"tier-ministers", branch:"navy", wiki:"Teijiro Toyoda", name:"Adm. Teijir\u014d Toyoda", jp:"\u8c4a\u7530\u8c9e\u6b21\u90ce", seal:"\u8c4a\u7530", role:"Foreign Minister Jul-Oct 1941", offices:"Foreign Minister in the third Konoye cabinet, July to October 1941.", bio:"The admiral brought in to replace Matsuoka and calm Washington. Instead his tenure opens with the occupation of southern Indochina and the American freeze on Japanese assets and oil, the fuse Toland shows burning through the rest of 1941."},
+ {id:"togo", tier:"tier-ministers", branch:"gov", wiki:"Shigenori Togo", name:"Shigenori T\u014dg\u014d", jp:"\u6771\u90f7\u8302\u5fb3", seal:"\u6771\u90f7", role:"Foreign Minister under Tojo", offices:"Foreign Minister, October 1941 to September 1942. Ran the final negotiations with Washington.", bio:"The blunt career diplomat who joins Tojo's cabinet only after being assured diplomacy will get a real chance. He fights inside the government for Proposals A and B, and receives the Hull note of November 26, which he reads as an ultimatum that ends all hope."},
+ {id:"kaya", tier:"tier-ministers", branch:"gov", wiki:"Okinori Kaya", name:"Okinori Kaya", jp:"\u8cc0\u5c4b\u8208\u5ba3", seal:"\u8cc0\u5c4b", role:"Finance Minister under Tojo", offices:"Finance Minister, October 1941 to 1944.", bio:"The finance man who, at the November liaison conferences, keeps asking the question no one will answer straight: can the Navy actually win, and what happens in the third year of war? Toland uses his persistent doubts to show how the war decision hardened around unanswered questions."},
+ {id:"suzuki_t", tier:"tier-ministers", branch:"gov", wiki:"Teiichi Suzuki", name:"Lt. Gen. Teiichi Suzuki", jp:"\u9234\u6728\u8c9e\u4e00", seal:"\u9234\u6728", role:"President, Cabinet Planning Board", offices:"President of the Cabinet Planning Board, 1941. Supplied the materials arithmetic behind the war decision.", bio:"The planner whose oil and shipping figures frame the 'now or never' argument of autumn 1941: reserves falling daily under the embargo, war potential peaking, then declining. His numbers give the deadline its force."},
+ {id:"nomura", tier:"tier-diplomats", branch:"navy", wiki:"Kichisaburo Nomura", name:"Adm. Kichisabur\u014d Nomura", jp:"\u91ce\u6751\u5409\u4e09\u90ce", seal:"\u91ce\u6751", role:"Ambassador to the United States", offices:"Ambassador in Washington, February 1941 to the outbreak of war. A friend of Roosevelt from World War I days.", bio:"The one-eyed admiral sent to Washington on the strength of his personal friendship with Roosevelt. Through 1941 he holds dozens of meetings with Cordell Hull, hampered by poor English, garbled instructions, and the John Doe amateur diplomacy. He delivers the final note on December 7, after the bombs have already fallen."},
+ {id:"kurusu", tier:"tier-diplomats", branch:"gov", wiki:"Saburo Kurusu", name:"Sabur\u014d Kurusu", jp:"\u6765\u6816\u4e09\u90ce", seal:"\u6765\u6816", role:"Special Envoy to Washington", offices:"Special envoy sent in November 1941 to assist Nomura in the final talks. Married to an American; had signed the Tripartite Pact as ambassador in Berlin.", bio:"Rushed across the Pacific in November 1941 as a last gesture. Toland uses him to show the sincerity and futility of the final round: an envoy with an American wife, distrusted by Hull for having signed the Axis pact, negotiating against a deadline he does not know is a fleet already at sea."},
+ {id:"oshima", tier:"tier-diplomats", branch:"army", wiki:"Hiroshi \u014cshima", name:"Lt. Gen. Hiroshi \u014cshima", jp:"\u5927\u5cf6\u6d69", seal:"\u5927\u5cf6", role:"Ambassador to Germany", offices:"Military attach\u00e9 and then ambassador in Berlin; prime mover of the German alliance.", bio:"The soldier-diplomat more at home with Ribbentrop than with his own Foreign Ministry, who pushed the German alliance for years and relayed Hitler's urgings to strike south. Unknown to him, his meticulous reports to Tokyo were being read in Washington through Magic."},
+ {id:"shiratori", tier:"tier-diplomats", branch:"gov", wiki:"Toshio Shiratori", name:"Toshio Shiratori", jp:"\u767d\u9ce5\u654f\u592b", seal:"\u767d\u9ce5", role:"Ambassador to Italy", offices:"Ambassador in Rome, 1938-39; leading pro-Axis voice in the Foreign Ministry.", bio:"\u014cshima's partner in the campaign for the Axis alliance, lobbying from Rome and threatening resignation to force the pact through during the 1939 debates."},
+ {id:"kase", tier:"tier-diplomats", branch:"gov", wiki:"Toshikazu Kase", name:"Toshikazu Kase", jp:"\u52a0\u702c\u4fca\u4e00", seal:"\u52a0\u702c", role:"Foreign Ministry Secretary", offices:"Secretary to Foreign Ministers Matsuoka and T\u014dg\u014d; fluent English-speaking aide through the 1941 negotiations.", bio:"The young Foreign Ministry hand at the ministers' elbows through the negotiation chapters, drafting, translating, and watching the last chances slip. One of Toland's inside sources for how the final cables read from Tokyo."},
+ {id:"okumura", tier:"tier-diplomats", branch:"gov", wiki:"Katsuz\u014d Okumura", name:"Katsuz\u014d Okumura", jp:"\u5965\u6751\u52dd\u8535", seal:"\u5965\u6751", role:"First Secretary, Washington Embassy", offices:"Embassy secretary who retyped the final 14-part message on December 6-7, 1941.", bio:"The diplomat at the typewriter in Toland's account of the embassy's worst morning: security rules barred a professional typist from the 14-part note, and his slow retyping helped ensure the 'declaration' arrived after the bombs."},
+ {id:"ikawa", tier:"tier-johndoe", branch:"gov", wiki:"Tadao Ikawa", name:"Tadao Ikawa", jp:"\u4e95\u5ddd\u5fe0\u96c4", seal:"\u4e95\u5ddd", role:"Banker; John Doe Intermediary", offices:"Cooperative-bank director with American connections; half of the private channel behind the April 1941 Draft Understanding.", bio:"One of the two 'John Doe associates' who, with Father Drought and Bishop Walsh, cooked up the unofficial Draft Understanding that both capitals half-mistook for the other's offer. Toland treats the episode as the original sin of the 1941 negotiations."},
+ {id:"iwakuro", tier:"tier-johndoe", branch:"army", wiki:"Hideo Iwakuro", name:"Col. Hideo Iwakuro", jp:"\u5ca9\u7554\u8c6a\u96c4", seal:"\u5ca9\u7554", role:"Army Colonel; John Doe Intermediary", offices:"Military Affairs Bureau colonel sent to Washington in 1941 to support the talks.", bio:"The Army's man in the amateur channel, dispatched to Washington to help Nomura and the John Doe group. His confident back-channel drafting blurred what was official and what was wishful at exactly the moment clarity mattered most."},
+ {id:"sugiyama", tier:"army-staff", branch:"army", wiki:"Hajime Sugiyama", name:"Gen. Hajime Sugiyama", jp:"\u6749\u5c71\u5143", seal:"\u6749\u5c71", role:"Chief, Army General Staff", offices:"Chief of the Army General Staff, 1940-1944. Earlier War Minister at the start of the China Incident.", bio:"The 'Bathroom Door,' so called for his inscrutability. At the imperial conferences he assures the throne the southern operations will take three months, drawing Hirohito's cutting reminder that Sugiyama had once promised the China Incident would be over in a month."},
+ {id:"muto", tier:"army-staff", branch:"army", wiki:"Akira Muto", name:"Lt. Gen. Akira Mut\u014d", jp:"\u6b66\u85e4\u7ae0", seal:"\u6b66\u85e4", role:"Chief, Military Affairs Bureau", offices:"Chief of the Military Affairs Bureau, Army Ministry, 1939-1942. The Army's key political operator.", bio:"The Army Ministry's political brain. In Toland's telling Mut\u014d is more flexible than his chief, working behind the scenes in the autumn of 1941 to keep negotiations alive and even to find a formula on troop withdrawal, but never at the price of open Army retreat."},
+ {id:"sato", tier:"army-staff", branch:"army", wiki:"Kenry\u014d Sat\u014d", name:"Col. Kenry\u014d Sat\u014d", jp:"\u4f50\u85e4\u8ce2\u4e86", seal:"\u4f50\u85e4", role:"Military Affairs Section Chief", offices:"Section chief under Mut\u014d and confidant of Tojo; later bureau chief.", bio:"Tojo's blunt-spoken protege and sounding board, the voice of the Army hard line in the 1941 policy fights. Toland uses his frank recollections throughout the road-to-war chapters."},
+ {id:"ishiwara", tier:"army-china", branch:"army", wiki:"Kanji Ishiwara", name:"Lt. Gen. Kanji Ishiwara", jp:"\u77f3\u539f\u83ba\u723e", seal:"\u77f3\u539f", role:"Planner of the Manchurian Incident", offices:"Co-author of the 1931 Mukden Incident; Operations chief on the General Staff during the 2/26 Incident and the start of the China war.", bio:"The brilliant heretic who seized Manchuria in 1931, then spent 1937 vainly opposing escalation in China, arguing Japan was walking into a bottomless swamp. During 2/26 he is the staff officer who bluntly demands the rebels be crushed. His theory of a final war with the West haunts the whole book."},
+ {id:"doihara", tier:"army-china", branch:"army", wiki:"Kenji Doihara", name:"Gen. Kenji Doihara", jp:"\u571f\u80a5\u539f\u8ce2\u4e8c", seal:"\u571f\u80a5\u539f", role:"Intelligence Officer, China", offices:"Kwantung Army intelligence specialist, the intriguer behind Manchukuo and the North China puppet regimes.", bio:"'Lawrence of Manchuria.' The plotter whose kidnappings, bribes, and puppet governments turned incidents into conquests across Manchuria and North China in the book's early chapters."},
+ {id:"matsui", tier:"army-china", branch:"army", wiki:"Iwane Matsui", name:"Gen. Iwane Matsui", jp:"\u677e\u4e95\u77f3\u6839", seal:"\u677e\u4e95", role:"Commander, Central China Area Army", offices:"Overall commander of the drive on Nanking, December 1937.", bio:"The frail, tubercular general who took Nanking and then watched, too late and too weakly, as his army disgraced itself in the massacre that followed. Toland's account of the Rape of Nanking closes the China chapters in horror."},
+ {id:"hashimoto", tier:"army-china", branch:"army", wiki:"Kingoro Hashimoto", name:"Col. Kingor\u014d Hashimoto", jp:"\u6a4b\u672c\u6b23\u4e94\u90ce", seal:"\u6a4b\u672c", role:"Ultranationalist Artillery Officer", offices:"Serial coup plotter; his guns fired on Allied vessels during the Panay crisis, December 1937.", bio:"The professional conspirator of the 1930s coup plots, commanding artillery on the Yangtze when the USS Panay was bombed and sunk. His shore batteries fired on British gunboats the same day, nearly bringing the crisis Toland shows Tokyo scrambling to apologize away."},
+ {id:"terauchi", tier:"army-field", branch:"army", wiki:"Hisaichi Terauchi", name:"Count Hisaichi Terauchi", jp:"\u5bfa\u5185\u5bff\u4e00", seal:"\u5bfa\u5185", role:"C-in-C, Southern Army", offices:"War Minister 1936-37; Commander in Chief, Southern Army, from November 1941, directing the entire southern offensive.", bio:"The aristocratic field marshal's son who purged the Army after 2/26 as War Minister, then in 1941 takes command of the whole southern advance: Malaya, the Philippines, the Indies, and Burma, run from Saigon."},
+ {id:"yamashita", tier:"army-field", branch:"army", wiki:"Tomoyuki Yamashita", name:"Lt. Gen. Tomoyuki Yamashita", jp:"\u5c71\u4e0b\u5949\u6587", seal:"\u5c71\u4e0b", role:"Commander, 25th Army (Malaya)", offices:"Commander, 25th Army, invading Malaya on December 8, 1941, bound for Singapore.", bio:"The bull-necked general given the hardest assignment of the opening offensive: land at Kota Bharu and Singora in a monsoon and take Singapore. His landings begin more than an hour before Pearl Harbor, making Malaya, not Hawaii, the war's true opening shot in Toland's chronology. In 1936 he had been a sympathizer contact of the 2/26 rebels."},
+ {id:"homma", tier:"army-field", branch:"army", wiki:"Masaharu Homma", name:"Lt. Gen. Masaharu Homma", jp:"\u672c\u9593\u96c5\u6674", seal:"\u672c\u9593", role:"Commander, 14th Army (Philippines)", offices:"Commander, 14th Army, tasked with the invasion of Luzon in December 1941.", bio:"The tall, poetry-writing, Anglophile general ordered to conquer the Philippines in fifty days. Toland introduces him as one of the Army's moderates, privately doubtful about the war he is about to open with landings on Luzon."},
+ {id:"tsuji", tier:"army-field", branch:"army", wiki:"Masanobu Tsuji", name:"Col. Masanobu Tsuji", jp:"\u8fbb\u653f\u4fe1", seal:"\u8fbb", role:"Operations Planner, 25th Army", offices:"Chief of the Taiwan Army research unit that wrote the jungle-warfare doctrine; operations officer for the Malaya campaign.", bio:"The fanatic staff genius whose Taiwan research unit distilled tropical warfare into the pamphlet issued to every man of the invasion force, and who rode ashore with Yamashita's army to apply it. One of the book's recurring dark stars."},
+ {id:"nagano", tier:"navy-staff", branch:"navy", wiki:"Osami Nagano", name:"Adm. Osami Nagano", jp:"\u6c38\u91ce\u4fee\u8eab", seal:"\u6c38\u91ce", role:"Chief, Navy General Staff", offices:"Chief of the Navy General Staff from April 1941. Approved the Pearl Harbor plan after Yamamoto's resignation threat.", bio:"The Navy's drowsy-seeming senior admiral whose oil-clock argument drives the timetable: the fleet is consuming its reserves, so if war must come, it must come soon. He resists Yamamoto's Hawaii gamble as too risky until Yamamoto threatens to resign, then yields."},
+ {id:"yoshida_z", tier:"navy-staff", branch:"navy", wiki:"Zengo Yoshida", name:"Adm. Zengo Yoshida", jp:"\u5409\u7530\u5584\u543e", seal:"\u5409\u7530", role:"Navy Minister 1939-40", offices:"Navy Minister who resisted the Tripartite Pact until his health collapsed in September 1940.", bio:"Yonai's successor at the Navy Ministry, who carried on the fight against the German alliance nearly alone until the strain broke his health. His resignation removed the Navy's last open obstacle to the pact, signed weeks later."},
+ {id:"oikawa", tier:"navy-staff", branch:"navy", wiki:"Koshiro Oikawa", name:"Adm. Koshir\u014d Oikawa", jp:"\u53ca\u5ddd\u53e4\u5fd7\u90ce", seal:"\u53ca\u5ddd", role:"Navy Minister to Oct 1941", offices:"Navy Minister, September 1940 to October 1941.", bio:"The Navy Minister who privately doubts Japan can win but will not say so plainly, telling colleagues the Navy cannot openly oppose war after years of budget claims. His refusal to state the Navy's misgivings on the record helps trap Konoye in October 1941."},
+ {id:"shimada", tier:"navy-staff", branch:"navy", wiki:"Shigetaro Shimada", name:"Adm. Shigetar\u014d Shimada", jp:"\u5cf6\u7530\u7e41\u592a\u90ce", seal:"\u5cf6\u7530", role:"Navy Minister under Tojo", offices:"Navy Minister from October 1941 in the Tojo cabinet.", bio:"Oikawa's successor in the Tojo cabinet. After days of anguish, and pressure from senior admirals, he swings the Navy behind the war decision in early November 1941, removing the last institutional obstacle to the Pearl Harbor operation."},
+ {id:"yamamoto", tier:"navy-fleet", big:true, branch:"navy", wiki:"Isoroku Yamamoto", name:"Adm. Isoroku Yamamoto", jp:"\u5c71\u672c\u4e94\u5341\u516d", seal:"\u5c71\u672c", role:"C-in-C, Combined Fleet", offices:"Commander in Chief, Combined Fleet, from August 1939. Conceiver of the Pearl Harbor attack.", bio:"The poker-playing former vice navy minister who fought the Tripartite Pact so hard he was sent to sea partly to save him from assassination. Convinced Japan cannot win a long war, he stakes everything on annihilating the U.S. fleet at the outset, forcing the plan through with his threat to resign."},
+ {id:"ugaki", tier:"navy-fleet", branch:"navy", wiki:"Matome Ugaki", name:"R. Adm. Matome Ugaki", jp:"\u5b87\u57a3\u7e8f", seal:"\u5b87\u57a3", role:"Chief of Staff, Combined Fleet", offices:"Yamamoto's chief of staff from August 1941; keeper of the fleet's war diary.", bio:"Yamamoto's stiff, diary-keeping chief of staff aboard Nagato, running the staff work behind Operation Z and recording the fleet's inner history as the sortie date approached."},
+ {id:"kuroshima", tier:"navy-fleet", branch:"navy", wiki:"Kameto Kuroshima", name:"Capt. Kameto Kuroshima", jp:"\u9ed2\u5cf6\u4e80\u4eba", seal:"\u9ed2\u5cf6", role:"Senior Staff Officer, Combined Fleet", offices:"Yamamoto's operations planner, the fleet's resident eccentric.", bio:"The 'God of Operations,' who locked himself in a darkened, incense-filled cabin to think and emerged with the working details of the Hawaii plan. It is Kuroshima whom Yamamoto sends to Tokyo with the ultimatum that wins Nagano's approval: adopt the plan or Yamamoto resigns."},
+ {id:"nagumo", tier:"navy-fleet", branch:"navy", wiki:"Chuichi Nagumo", name:"V. Adm. Ch\u016bichi Nagumo", jp:"\u5357\u96f2\u5fe0\u4e00", seal:"\u5357\u96f2", role:"Commander, First Air Fleet (Kid\u014d Butai)", offices:"Commander, First Air Fleet, the six-carrier striking force that attacked Pearl Harbor.", bio:"The torpedo specialist commanding a carrier force he never asked for. Toland shows him doubtful of the Hawaii operation from the start, and after two waves on December 7 he declines a third strike and turns for home, a decision argued about for the rest of the war."},
+ {id:"kusaka", tier:"navy-fleet", branch:"navy", wiki:"Ryunosuke Kusaka", name:"R. Adm. Ry\u016bnosuke Kusaka", jp:"\u8349\u9e7f\u9f8d\u4e4b\u4ecb", seal:"\u8349\u9e7f", role:"Chief of Staff, First Air Fleet", offices:"Chief of Staff to Nagumo aboard Akagi during the Pearl Harbor operation.", bio:"Nagumo's Zen-practicing chief of staff, who initially calls the Hawaii plan a gamble unworthy of the fleet, then loyally builds the northern-route plan that gets the carriers to launch point undetected. It is Kusaka who supports the decision to retire after the second wave."},
+ {id:"onishi", tier:"navy-fleet", branch:"navy", wiki:"Takijiro Onishi", name:"R. Adm. Takijir\u014d \u014cnishi", jp:"\u5927\u897f\u701e\u6cbb\u90ce", seal:"\u5927\u897f", role:"Chief of Staff, 11th Air Fleet", offices:"Chief of Staff, 11th Air Fleet. Conducted the first feasibility study of the Pearl Harbor attack in early 1941.", bio:"The hard-driving air admiral Yamamoto first entrusts with the Hawaii idea in January 1941. He brings in Genda to study it, concludes it is feasible but a terrible gamble, and by autumn argues against it, urging Yamamoto to drop the plan. Yamamoto refuses."},
+ {id:"genda", tier:"navy-fleet", branch:"navy", wiki:"Minoru Genda", name:"Cdr. Minoru Genda", jp:"\u6e90\u7530\u5b9f", seal:"\u6e90\u7530", role:"Air Operations Planner", offices:"Air staff officer, First Air Fleet. Principal tactical planner of the Pearl Harbor attack.", bio:"The brilliant airman who turns Yamamoto's idea into an operation: massed six-carrier employment, shallow-running torpedoes for Pearl Harbor's forty-foot water, armor-piercing shells converted to bombs. Toland presents him as the plan's true engineer and an advocate of invading Hawaii outright."},
+ {id:"fuchida", tier:"navy-fleet", branch:"navy", wiki:"Mitsuo Fuchida", name:"Cdr. Mitsuo Fuchida", jp:"\u6df5\u7530\u7f8e\u6d25\u96c4", seal:"\u6df5\u7530", role:"Strike Leader, Pearl Harbor", offices:"Flight leader of the 183-plane first wave, December 7, 1941.", bio:"Genda's Eta Jima classmate, chosen to lead the strike itself. From his bomber over Oahu he fires the black dragon flare and sends the signal 'Tora, tora, tora': complete surprise. He circles Pearl Harbor through both waves and argues, unsuccessfully, for a third."},
+ {id:"sakamaki", tier:"navy-fleet", branch:"navy", wiki:"Kazuo Sakamaki", name:"Ens. Kazuo Sakamaki", jp:"\u9152\u5dfb\u548c\u7537", seal:"\u9152\u5dfb", role:"Midget Submarine Officer", offices:"Commander of one of the five midget submarines launched against Pearl Harbor.", bio:"The ensign whose crippled midget submarine, gyro broken, grounded on an Oahu reef, making him Prisoner of War Number One. His nine dead comrades were deified as 'war gods'; his own name was simply erased from the list."},
+ {id:"yoshikawa", tier:"navy-spy", branch:"navy", wiki:"Takeo Yoshikawa", name:"Takeo Yoshikawa", jp:"\u5409\u5ddd\u731b\u592b", seal:"\u5409\u5ddd", role:"Intelligence Officer, Honolulu", offices:"Naval intelligence officer working under the alias 'Tadashi Morimura' at the Honolulu consulate from March 1941.", bio:"The young spy who counted the Pacific Fleet from teahouses and tourist flights, no camera, nothing written, everything in his head. His ships-in-harbor reports, keyed to the consulate's grid scheme, were the eyes of Operation Z."},
+ {id:"kita_n", tier:"navy-spy", branch:"navy", wiki:"Nagao Kita", name:"Nagao Kita", jp:"\u559c\u591a\u9577\u96c4", seal:"\u559c\u591a", role:"Consul General, Honolulu", offices:"Consul General from March 1941; forwarded the espionage traffic to Tokyo.", bio:"The consul general under whose cover Yoshikawa worked, transmitting the harbor reports, including the September 'bomb plot' message dividing Pearl Harbor into a targeting grid, traffic Washington decoded but never acted on."}
+];
+
+const BRANCH = {court:"var(--court)", gov:"var(--gov)", army:"var(--army)", navy:"var(--navy)"};
+const BRANCH_NAME = {court:"Imperial Court", gov:"Government", army:"Imperial Army", navy:"Imperial Navy"};
+const IMGS = {};
+let anyLoaded = false;
+
+function makeCard(p){
+  const b = document.createElement("button");
+  b.className = "card" + (p.big ? " big" : "");
+  b.style.setProperty("--branch", BRANCH[p.branch]);
+  b.setAttribute("aria-haspopup","dialog");
+  b.innerHTML =
+    '<span class="photo"><span class="fb">' + p.jp + '</span>' +
+    '<img alt="" data-pid="' + p.id + '"></span>' +
+    '<span class="txt"><span class="nm">' + p.name + '</span>' +
+    '<span class="rl">' + p.role + '</span></span>';
+  b.addEventListener("click", function(){ openDossier(p); });
+  return b;
+}
+
+PEOPLE.forEach(function(p){
+  const host = document.getElementById(p.tier);
+  if (host) host.appendChild(makeCard(p));
+});
+
+const CANDS = {"hirohito": ["Hirohito in dress uniform.jpg", "Emperor Hirohito.jpg", "Hirohito portrait.jpg"], "kido": ["Koichi Kido.jpg", "Kido Koichi.jpg", "K\u014dichi Kido.jpg"], "saionji": ["Kinmochi Saionji 2.jpg", "Saionji Kinmochi.jpg", "Kinmochi Saionji.jpg"], "hara": ["Yoshimichi Hara.jpg", "Hara Yoshimichi.jpg"], "suzuki_k": ["Kantaro Suzuki.jpg", "Suzuki Kantaro.jpg", "Kantar\u014d Suzuki.jpg"], "honjo": ["Shigeru Honjo.jpg", "Honjo Shigeru.jpg", "Shigeru Honj\u014d.jpg"], "kita": ["Kita Ikki.jpg", "Ikki Kita.jpg"], "nishida": ["Mitsugi Nishida.jpg", "Nishida Mitsugi.jpg"], "nonaka": ["Shiro Nonaka.jpg", "Nonaka Shiro.jpg", "Shir\u014d Nonaka.jpg"], "ando": ["Teruzo Ando.jpg", "Ando Teruzo.jpg", "Teruz\u014d And\u014d.jpg"], "kurihara": ["Yasuhide Kurihara.jpg", "Kurihara Yasuhide.jpg"], "okada": ["Keisuke Okada.jpg", "Okada Keisuke.jpg", "Keisuke Okada 2.jpg"], "takahashi": ["Takahashi Korekiyo.jpg", "Korekiyo Takahashi.jpg"], "saito_m": ["Makoto Saito.jpg", "Saito Makoto.jpg", "Makoto Sait\u014d.jpg"], "watanabe": ["Jotaro Watanabe.jpg", "Watanabe Jotaro.jpg", "J\u014dtar\u014d Watanabe.jpg"], "araki": ["Sadao Araki.jpg", "Araki Sadao.jpg"], "mazaki": ["Jinzaburo Masaki.jpg", "Masaki Jinzaburo.jpg", "Jinzabur\u014d Masaki.jpg"], "kawashima": ["Yoshiyuki Kawashima.jpg", "Kawashima Yoshiyuki.jpg"], "hirota": ["Koki Hirota.jpg", "Hirota Koki.jpg", "K\u014dki Hirota.jpg"], "hayashi": ["Senjuro Hayashi.jpg", "Hayashi Senjuro.jpg", "Senj\u016br\u014d Hayashi.jpg"], "konoye": ["Fumimaro Konoe.jpg", "Konoe Fumimaro.jpg", "Fumimaro Konoe 2.jpg"], "hiranuma": ["Kiichiro Hiranuma.jpg", "Hiranuma Kiichiro.jpg", "Kiichir\u014d Hiranuma.jpg"], "abe": ["Nobuyuki Abe.jpg", "Abe Nobuyuki.jpg"], "yonai": ["Mitsumasa Yonai.jpg", "Yonai Mitsumasa.jpg"], "tojo": ["Hideki Tojo.jpg", "Tojo Hideki.jpg", "Hideki Tojo posing.jpg"], "matsuoka": ["Yosuke Matsuoka.jpg", "Matsuoka Yosuke.jpg", "Y\u014dsuke Matsuoka.jpg"], "toyoda_t": ["Teijiro Toyoda.jpg", "Toyoda Teijiro.jpg", "Teijir\u014d Toyoda.jpg"], "togo": ["Shigenori Togo.jpg", "Togo Shigenori.jpg", "Shigenori T\u014dg\u014d.jpg"], "kaya": ["Okinori Kaya.jpg", "Kaya Okinori.jpg"], "suzuki_t": ["Teiichi Suzuki.jpg", "Suzuki Teiichi.jpg"], "nomura": ["Kichisaburo Nomura.jpg", "Nomura Kichisaburo.jpg", "Kichisabur\u014d Nomura.jpg"], "kurusu": ["Saburo Kurusu.jpg", "Kurusu Saburo.jpg", "Sabur\u014d Kurusu.jpg"], "oshima": ["Hiroshi Oshima.jpg", "Oshima Hiroshi.jpg", "Hiroshi \u014cshima.jpg"], "shiratori": ["Toshio Shiratori.jpg", "Shiratori Toshio.jpg"], "kase": ["Toshikazu Kase.jpg", "Kase Toshikazu.jpg"], "okumura": ["Katsuzo Okumura.jpg", "Okumura Katsuzo.jpg"], "ikawa": ["Tadao Ikawa.jpg", "Ikawa Tadao.jpg"], "iwakuro": ["Hideo Iwakuro.jpg", "Iwakuro Hideo.jpg"], "sugiyama": ["Hajime Sugiyama.jpg", "Sugiyama Hajime.jpg", "Hajime Sugiyama 2.jpg"], "muto": ["Akira Muto.jpg", "Muto Akira.jpg", "Akira Mut\u014d.jpg"], "sato": ["Kenryo Sato.jpg", "Sato Kenryo.jpg", "Kenry\u014d Sat\u014d.jpg"], "ishiwara": ["Kanji Ishiwara.jpg", "Ishiwara Kanji.jpg", "Kanji Ishiwara2.JPG"], "doihara": ["Kenji Doihara.jpg", "Doihara Kenji.jpg"], "matsui": ["Iwane Matsui.jpg", "Matsui Iwane.jpg"], "hashimoto": ["Kingoro Hashimoto.jpg", "Hashimoto Kingoro.jpg", "Kingor\u014d Hashimoto.jpg"], "terauchi": ["Hisaichi Terauchi.jpg", "Terauchi Hisaichi.jpg"], "yamashita": ["Tomoyuki Yamashita.jpg", "Yamashita Tomoyuki.jpg"], "homma": ["Masaharu Homma.jpg", "Homma Masaharu.jpg"], "tsuji": ["Masanobu Tsuji.jpg", "Tsuji Masanobu.jpg"], "nagano": ["Osami Nagano.jpg", "Nagano Osami.jpg"], "yoshida_z": ["Zengo Yoshida.jpg", "Yoshida Zengo.jpg"], "oikawa": ["Koshiro Oikawa.jpg", "Oikawa Koshiro.jpg", "Koshir\u014d Oikawa.jpg"], "shimada": ["Shigetaro Shimada.jpg", "Shimada Shigetaro.jpg", "Shigetar\u014d Shimada.jpg"], "yamamoto": ["Isoroku Yamamoto.jpg", "Yamamoto Isoroku.jpg", "Yamamoto-Isoroku.jpg"], "ugaki": ["Matome Ugaki.jpg", "Ugaki Matome.jpg"], "kuroshima": ["Kameto Kuroshima.jpg", "Kuroshima Kameto.jpg"], "nagumo": ["Chuichi Nagumo.jpg", "Nagumo Chuichi.jpg", "Ch\u016bichi Nagumo.jpg"], "kusaka": ["Ryunosuke Kusaka.jpg", "Kusaka Ryunosuke.jpg", "Ry\u016bnosuke Kusaka.jpg"], "onishi": ["Takijiro Onishi.jpg", "Onishi Takijiro.jpg", "Takijir\u014d \u014cnishi.jpg"], "genda": ["Minoru Genda.jpg", "Genda Minoru.jpg"], "fuchida": ["Mitsuo Fuchida.jpg", "Fuchida Mitsuo.jpg"], "sakamaki": ["Kazuo Sakamaki.jpg", "Sakamaki Kazuo.jpg"], "yoshikawa": ["Takeo Yoshikawa.jpg", "Yoshikawa Takeo.jpg"], "kita_n": ["Nagao Kita.jpg", "Kita Nagao.jpg"]};
+
+function fp(name){
+  return "https://en.wikipedia.org/wiki/Special:FilePath/" +
+         encodeURIComponent(name) + "?width=400";
+}
+
+// Strategy A: direct image loading, candidate filenames tried in order.
+function startCandidates(p){
+  const img = document.querySelector('img[data-pid="' + p.id + '"]');
+  const list = ["LOCAL"].concat(CANDS[p.id] || []);
+  if (!img) return;
+  let i = 0;
+  img.onload = function(){
+    img.style.display = "block";
+    anyLoaded = true;
+    if (!IMGS[p.id]) IMGS[p.id] = img.src;
+  };
+  function srcFor(name){
+    return name === "LOCAL" ? "img/portraits/" + p.id + ".jpg" : fp(name);
+  }
+  img.onerror = function(){
+    i++;
+    if (i < list.length) img.src = srcFor(list[i]);
+  };
+  img.src = srcFor(list[0]);
+}
+PEOPLE.forEach(startCandidates);
+
+// Strategy B: Wikipedia REST lookup for the article's true lead portrait.
+// Upgrades or fills in whatever Strategy A managed. Fails silently where
+// fetch() from a local file is blocked.
+function loadPortrait(p){
+  const url = "https://en.wikipedia.org/api/rest_v1/page/summary/" +
+              encodeURIComponent(p.wiki.replace(/ /g, "_"));
+  return fetch(url)
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (!j) return;
+      const src = (j.thumbnail && j.thumbnail.source) ||
+                  (j.originalimage && j.originalimage.source);
+      if (!src) return;
+      IMGS[p.id] = src;
+      anyLoaded = true;
+      const img = document.querySelector('img[data-pid="' + p.id + '"]');
+      if (img && img.style.display !== "block" && img.src !== src){
+        img.onerror = null;
+        img.src = src;
+      }
+    })
+    .catch(function(){});
+}
+Promise.all(PEOPLE.map(loadPortrait));
+
+setTimeout(function(){
+  if (!anyLoaded) document.getElementById("netnote").style.display = "block";
+}, 8000);
+
+
+const overlay = document.getElementById("overlay");
+const dossier = document.getElementById("dossier");
+let lastFocus = null;
+
+function openDossier(p){
+  lastFocus = document.activeElement;
+  dossier.style.setProperty("--branch", BRANCH[p.branch]);
+  const src = IMGS[p.id];
+  const picInner = '<span class="fb">' + p.jp + '</span>' +
+    (src ? '<img alt="Portrait of ' + p.name + '" src="' + src +
+           '" onload="this.style.display=\'block\'">' : '');
+  dossier.innerHTML =
+    '<button class="close" aria-label="Close">✕</button>' +
+    '<div class="dhead">' +
+      '<div class="pic">' + picInner + '</div>' +
+      '<div><div class="nm">' + p.name + '</div>' +
+      '<div class="jp">' + p.jp + '</div>' +
+      '<span class="badge">' + BRANCH_NAME[p.branch] + '</span></div>' +
+    '</div>' +
+    '<div class="field"><div class="lb">Position</div><div class="vl">' + p.offices + '</div></div>' +
+    '<div class="field"><div class="lb">In Toland\'s Narrative, Ch. 1-12</div><div class="vl bio">' + p.bio + '</div></div>' +
+    '<div class="stamp">' + p.seal + '</div>';
+  overlay.classList.add("open");
+  dossier.querySelector(".close").addEventListener("click", closeDossier);
+  dossier.querySelector(".close").focus();
+}
+
+function closeDossier(){
+  overlay.classList.remove("open");
+  if (lastFocus) lastFocus.focus();
+}
+
+overlay.addEventListener("click", function(e){ if (e.target === overlay) closeDossier(); });
+document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeDossier(); });
+</script>
+</body>
+</html>
