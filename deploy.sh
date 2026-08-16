@@ -20,9 +20,10 @@ if [ "$1" = "hetzner" ]; then
   exit 0
 fi
 
-git add -A
+[ "$(git branch --show-current)" = "main" ] || { echo "Switch to main first (on $(git branch --show-current))."; exit 1; }
+git add rising-sun-org-chart.html rising-sun-atlas.html img fetch_assets.py fetch_assets_retry.py deploy.sh .gitignore .nojekyll
 git diff --cached --quiet && echo "Nothing changed." || git commit -m "Update site $(date +%Y-%m-%d)"
-git push origin main
+git push origin HEAD:main
 echo "Pushed. GitHub Pages rebuilds in ~1 minute:"
 echo "  https://gconz.github.io/risingsun/rising-sun-org-chart.html"
 echo "  https://gconz.github.io/risingsun/rising-sun-atlas.html"
